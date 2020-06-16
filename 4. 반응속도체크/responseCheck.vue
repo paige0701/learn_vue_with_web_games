@@ -1,10 +1,11 @@
 <template>
     <div>
         <div id="screen" :class="state" @click="onClickScreen">{{message}}</div>
-        <div>
+        <template v-show="result.length">
+            <!--v show 는 테그가 있음. v-if는 tag자체가 존재 하지 않음-->
             <div>평균 시간 : {{average}}ms</div>
             <button @click="onReset">reset</button>
-        </div>
+        </template>
     </div>
 </template>
 <script>
@@ -21,7 +22,7 @@
             }
         },
         computed: {
-          average() { //캐싱이 된다.message만 바꿨는데 리설트 부분이 계속 계산한다 if computed를 쓰지 않는 경우
+          average() { //캐싱이 된다.message만 바꿨는데 리설트 부분이 계속 계산한다 if computed를 쓰지 않는 경
               return this.result.reduce((a,b) => a+b, 0)/this.result.length || 0;
           }
         },
