@@ -2,7 +2,7 @@
     <div>
         <div id="screen" :class="state" @click="onClickScreen">{{message}}</div>
         <div>
-            <div>평균 시간 : {{result.reduce((a,b) => a+b, 0)/result.length || 0}}ms</div>
+            <div>평균 시간 : {{average}}ms</div>
             <button @click="onReset">reset</button>
         </div>
     </div>
@@ -19,6 +19,11 @@
                 state: 'waiting',
                 message: '클릭해서 시작하세요'
             }
+        },
+        computed: {
+          average() { //캐싱이 된다.message만 바꿨는데 리설트 부분이 계속 계산한다 if computed를 쓰지 않는 경우
+              return this.result.reduce((a,b) => a+b, 0)/this.result.length || 0;
+          }
         },
         methods: {
             onReset() {
