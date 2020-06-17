@@ -1,77 +1,104 @@
 <template>
     <div>
-        <div id="screen" :class="state" @click="onClickScreen">{{message}}</div>
-        <template v-show="result.length">
-            <!--v show 는 테그가 있음. v-if는 tag자체가 존재 하지 않음-->
-            <div>평균 시간 : {{average}}ms</div>
-            <button @click="onReset">reset</button>
-        </template>
+        <div id="computer" :style="computedStyleObject"></div>
+        <div>
+            <button @click="onClickButton('바위')">바위</button>
+            <button @click="onClickButton('가위')">가위</button>
+            <button @click="onClickButton('보')">보</button>
+        </div>
+        <div>
+            <div>{{result}}</div>
+            <div>현제 {{score}}점</div>
+        </div>
     </div>
 </template>
 <script>
-    let startTime = 0;
-    let endTime = 0;
-    let timeout = null;
+    const rspCoords = {
+        바위 : '0',
+        가위: '-142px',
+        보: '-284px'
+    };
 
+    const scores = {
+        가위 : 1,
+        바위: 0,
+        보 : -1
+    };
+
+    const computerChoice = (imgCoord) => {
+        return Object.entries(rspCoords).find((v) => {
+            return v[1] === imgCoord
+        })[0]
+    };
+
+    let interval = null;
     export default {
         data() {
             return {
-                result: [],
-                state: 'waiting',
-                message: '클릭해서 시작하세요'
+                result: '',
+                score: 0,
+                imgCoord: rspCoords.바위
             }
         },
         computed: {
-          average() { //캐싱이 된다.message만 바꿨는데 리설트 부분이 계속 계산한다 if computed를 쓰지 않는 경
-              return this.result.reduce((a,b) => a+b, 0)/this.result.length || 0;
-          }
-        },
-        methods: {
-            onReset() {
-                this.result = [];
-            },
-            onClickScreen(){
-                if (this.state === 'waiting') {
-                    this.state = 'ready';
-                    this.message = '초록색이 되면 클릭하세요.';
-                    timeout = setTimeout( () => {
-                        this.state = 'now';
-                        this.message = '지금 클릭!';
-                        startTime = new Date();
-                    }, Math.floor(Math.random() * 1000) + 2000) // 2~3초
-                } else if (this.state === 'ready') {
-                    clearTimeout(timeout)
-                    this.state = 'waiting';
-                    this.message = '너무 성급하시군요! 초록색이 된 후에 클릭하세요'
-                } else if (this.state === 'now') {
-                    endTime = new Date();
-                    this.state = 'waiting';
-                    this.message = '클릭해서 시작하세요';
-                    this.result.push(endTime-startTime)
+            computedStyleObject() {
+                return {
+                    background: `url(https://en.pimg.jp/023/182/267/1/23182267.jpg) ${this.imgCoord} 0 `
                 }
             }
+        },
+        methods: {
+            changeHand() {
+                interval = setInterval(() => {
+                    if (this.imgCoord === rspCoords.가위) {
+                        this.imgCoord = rspCoords.보
+                    } else if (this.imgCoord === rspCoords.보) {
+                        this.imgCoord = rspCoords.바위
+                    } else if (this.imgCoord === rspCoords.바위) {
+                        this.imgCoord = rspCoords.가위
+                    }
+                }, 100)
+            },
+            onClickButton(choice) {
+                clearInterval(interval);
+                const myScore = scores[choice];
+                const cpuScore = scores[computerChoice(this.imgCoord)]
+                const diff = myScore - cpuScore;
+                if (diff === 0) {
+                    this.result = '비겼습니다';
+                } else if ([-1, 2].includes(diff)) {
+                    this.result = '이겼습니다';
+                    this.score += 1
+                } else {
+                    this.result = '졌습니다.';
+                    this.score -= 1
+                }
+                setTimeout(() => {
+                    this.changeHand();
+                }, 1000)
+            }
+        },
+        created() {
+            console.info('created');
+        },
+        mounted() {
+            this.changeHand();
+        },
+        updated() {
+            console.log('updated')
+        },
+        beforeDestroy() {
+            clearInterval(interval);
+        },
+        destroyed() {
+            console.log('destroyed')
         }
     }
 </script>
-<!--이 컴포넌트 안에서만 유효한 css scoped사용-->
 <style scoped>
-    #screen {
-        width: 300px;
-        height: 300px;
-        text-align: center;
-        user-select: none;
-    }
-
-    #screen.waiting {
-        background-color: aqua;
-    }
-
-    #screen.ready {
-        background-color: red;
-        color: white;
-    }
-
-    #screen.now {
-        background-color: greenyellow;
+    #computer {
+        width: 142px;
+        height: 200px;
+        background-position: 0 0 ;
     }
 </style>

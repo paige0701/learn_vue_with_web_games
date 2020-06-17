@@ -1,4 +1,4 @@
 import Vue from 'vue';
-import responseCheck from './responseCheck';
+import rockScissorsPaper from './rockScissorsPaper';
 
-new Vue(responseCheck).$mount('#root');
+new Vue(rockScissorsPaper).$mount('#root');
