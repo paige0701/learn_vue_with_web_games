@@ -43,7 +43,6 @@
                 this.winNumbers = getWinNumbers();
                 this.winBalls = [];
                 this.bonus = null;
-                this.showBalls();
             },
             showBalls() {
                 for (let i = 0; i < this.winNumbers.length-1; i++){
@@ -73,6 +72,13 @@
         },
         destroyed() {
             console.log('destroyed')
+        },
+        watch: {
+            winBalls(val, oldVal) {
+                if (val.length === 0) {
+                    this.showBalls();
+                }
+            }
         }
     }
 </script>
