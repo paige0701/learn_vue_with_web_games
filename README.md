@@ -7,3 +7,8 @@ Studying from tutorial from inflearn.
 Learning Vue.js by making simple web games.
 1. x * y  
 2. Word Relay
+3. number baseball
+4. response check
+5. scissors paper rock
+
+
