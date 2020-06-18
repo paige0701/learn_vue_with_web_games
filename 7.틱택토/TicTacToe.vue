@@ -4,8 +4,9 @@
     v-bind 생략 가능 ! 자식 컴포넌트로 props 전달
     -->
     <div>
-        <table-component :table-data="tableData"></table-component>
         <div>{{turn}}님의 턴입니다.</div>
+        <table-component :table-data="tableData"></table-component>
+        <div v-if="winner">{{winner}}님의 승리!</div>
     </div>
 
 </template>
@@ -22,7 +23,8 @@
                     ['', '', ''],
                     ['', '', '']
                 ],
-                turn: 'O'
+                turn: 'O',
+                winner: null
             }
         },
         computed: {
