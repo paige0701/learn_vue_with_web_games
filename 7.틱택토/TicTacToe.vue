@@ -27,6 +27,9 @@
         },
         computed: {
         }, methods: {
+            // vue 에서 배열 값을 index로 바꾸면 반영이 안된다. 객채도 안됨 (index 로 !)
+            // 꼭 Vue.set(this.tableData[1], 0, 'X') 로 한다.
+            // or this.$set(this.tableData[1], 0, 'X')
         }, mounted() {
         }, beforeDestroy() {
         }

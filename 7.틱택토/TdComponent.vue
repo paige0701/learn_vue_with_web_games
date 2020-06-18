@@ -10,8 +10,7 @@
         },
         methods: {
             onClickTd() {
-                console.info(this.$root.$data)
-                console.info(this.$parent.$data)
+                this.$set(this.$root.$data.tableData[this.rowIndex], this.cellIndex, this.$root.$data.turn);
                 this.$root.$data.turn = this.$root.$data.turn === 'O'? 'X' : 'O'
             }
         }
