@@ -8,10 +8,12 @@
 </template>
 <script>
 
-    import store from './store';
+    import store, {INCREMENT_TIMER} from './store';
     import TableComponent from './TableComponent';
     import MineForm from './MineForm';
     import { mapState } from 'vuex';
+
+    let interval ;
     export default {
         store,
         components: {
@@ -19,10 +21,21 @@
             MineForm,
         },
         computed: {
-            ...mapState(['timer', 'result'])
+            ...mapState(['timer', 'result', 'halted'])
         },
         methods: {
 
+        },
+        watch: {
+            halted(value, oldValue) {
+                if (value === false) {
+                    interval = setInterval(() => {
+                        this.$store.commit(INCREMENT_TIMER)
+                    }, 1000) // javascript에서 타이머는 정확하지 않을 수 있다.
+                } else {
+                    clearInterval(interval)
+                }
+            }
         }
 
     }

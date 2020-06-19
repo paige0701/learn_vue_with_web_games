@@ -65,6 +65,7 @@ export default new Vuex.Store({  // import store from ./store;
             mine: 0
         },
         timer: 0,
+        halted: true, //중단 됨
         result: ''
     },
     getters: {
@@ -77,7 +78,8 @@ export default new Vuex.Store({  // import store from ./store;
                 mine
             };
             state.tableData = plantMine(row, cell, mine);
-            state.time = 0
+            state.timer = 0;
+            state.halted = false;
 
         },
         [CLICK_MINE](state) {
@@ -96,7 +98,7 @@ export default new Vuex.Store({  // import store from ./store;
 
         },
         [INCREMENT_TIMER](state) {
-
+            state.timer += 1;
         },
 
 
