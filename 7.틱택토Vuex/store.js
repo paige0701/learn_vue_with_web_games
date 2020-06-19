@@ -22,7 +22,9 @@ export default new Vuex.Store({  // import store from ./store;
         winner: ''
     },
     getters: { // 뷰의 computed와 비슷
-
+        turnMessage(state) {
+            return state.turn + ' 님이 승리하셨습니다.'
+        }
 
     },
     mutations: { // state를 수정할 때 사용합. 동시적으로
