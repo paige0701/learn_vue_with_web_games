@@ -85,16 +85,31 @@ export default new Vuex.Store({  // import store from ./store;
         [CLICK_MINE](state) {
 
         },
-        [OPEN_CELL](state) {
+        [OPEN_CELL](state, {row, cell}) {
+            // state.tableData[row][cell] = code.OPEN // 이렇게 하지마 !!
+            Vue.set(state.tableData[row], cell, CODE.OPENED)
+        },
+        [FLAG_CELL](state, {row, cell}) {
+            if( state.tableData[row][cell] === CODE.MINE) {
+                Vue.set(state.tableData[row], cell, CODE.FLAG_MINE)
+            } else {
+                Vue.set(state.tableData[row], cell, CODE.QUESTION)
+            }
+        },
+        [QUESTION_CELL](state, {row, cell}) {
+            if( state.tableData[row][cell] === CODE.FLAG_MINE) {
+                Vue.set(state.tableData[row], cell, CODE.QUESTION_MINE)
+            } else {
+                Vue.set(state.tableData[row], cell, CODE.QUESTION)
+            }
 
         },
-        [FLAG_CELL](state) {
-
-        },
-        [QUESTION_CELL](state) {
-
-        },
-        [NORMALIZE_CELL](state) {
+        [NORMALIZE_CELL](state, {row, cell}) {
+            if( state.tableData[row][cell] === CODE.QUESTION_MINE) {
+                Vue.set(state.tableData[row], cell, CODE.MINE)
+            } else {
+                Vue.set(state.tableData[row], cell, CODE.NORMAL)
+            }
 
         },
         [INCREMENT_TIMER](state) {
