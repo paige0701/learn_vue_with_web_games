@@ -23,14 +23,9 @@ export const CODE = {
     OPENED: 0 // 0 이상이면 다 opened
 };
 const plantMine = (row, cell, mine) => {
-
-    console.info(row, cell, mine);
-
     const candidate = Array(row*cell).fill().map((arr, i) => {
         return i
     });
-    console.info(candidate);
-
     const shuffle =[];
 
     while (candidate.length > row * cell - mine) {
@@ -88,7 +83,23 @@ export default new Vuex.Store({  // import store from ./store;
         },
         [OPEN_CELL](state, {row, cell}) {
 
-            function getAroundMineNumber() {
+            const checked = [];
+            function getAroundMineNumber(row, cell) {
+
+                const checkIfRowCellIsUndefined = row < 0 || row >= state.tableData.length || cell < 0 || cell >= state.tableData[0].length;
+
+                if (checkIfRowCellIsUndefined) return;
+
+                if ([CODE.OPENED, CODE.FLAG_MINE, CODE.FLAG, CODE.QUESTION_MINE, CODE.QUESTION].includes(state.tableData[row][cell])) {
+                    return;
+                }
+
+                if (checked.includes(row+'/'+cell)) {
+                    return;
+                } else {
+                    checked.push(row+'/'+cell)
+                }
+
                 // 칸을 클릭했을 떄 주변 주변 지뢰 번호 출력하기
                 let around = [];
 
@@ -107,14 +118,38 @@ export default new Vuex.Store({  // import store from ./store;
                     ]);
                 }
 
-                return around.filter((v) => {
+                const counted = around.filter((v) => {
                     return [CODE.MINE, CODE.FLAG_MINE, CODE.QUESTION_MINE].includes(v)
-                }).length;
+                });
 
+                if (counted.length === 0 && row > -1) { //주변칸 열어보기
+                    let near = [];
+                    if (row-1 > -1) {
+                        near.push([row-1, cell-1]);
+                        near.push([row-1, cell]);
+                        near.push([row-1, cell+1]);
+                    }
+
+                    near.push([row, cell-1]);
+                    near.push([row, cell+1]);
+
+                    if (row + 1 < state.tableData.length) {
+                        near.push([row+1, cell-1]);
+                        near.push([row+1, cell]);
+                        near.push([row+1, cell+1]);
+                    }
+
+                    near.forEach((n) => {
+                        if (state.tableData[n[0]][n[1]] !== CODE.OPENED) {
+                            getAroundMineNumber(n[0], n[1])
+                        }
+                    })
+                }
+                Vue.set(state.tableData[row], cell, counted.length)
             }
-
+            getAroundMineNumber(row, cell);
             // state.tableData[row][cell] = code.OPEN // 이렇게 하지마 !!
-            Vue.set(state.tableData[row], cell, getAroundMineNumber())
+            Vue.set(state.tableData[row], cell, getAroundMineNumber(row, cell))
         },
         [FLAG_CELL](state, {row, cell}) {
             if( state.tableData[row][cell] === CODE.MINE) {
