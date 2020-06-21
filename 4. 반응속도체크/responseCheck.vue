@@ -14,6 +14,10 @@
     let timeout = null;
 
     export default {
+        beforeMount() {
+            console.info('router ---- ', this.$route);
+
+        },
         data() {
             return {
                 result: [],

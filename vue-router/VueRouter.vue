@@ -1,10 +1,11 @@
 <template>
     <div>
         <div>
-            <router-link to="/number-baseball">숫자야구</router-link>
-            <router-link to="/responseCheck">반응체크</router-link>
-            <router-link to="/rockScissorsPaper">가위바위보</router-link>
-            <router-link to="/lottoGame">로또게임</router-link>
+            <router-link to="/game">게임 매쳐</router-link>
+            <router-link to="/game/responseCheck?data=1&hello=ok">쿼리스트링</router-link>
+            <router-link to="/game/responseCheck">반응체크</router-link>
+            <router-link to="/game/rockScissorsPaper">가위바위보</router-link>
+            <router-link to="/game/lottoGame">로또게임</router-link>
         </div>
         <router-view></router-view>
     </div>
