@@ -75,6 +75,8 @@ export default new Vuex.Store({  // import store from ./store;
             state.tableData = plantMine(row, cell, mine);
             state.timer = 0;
             state.halted = false;
+            state.openedCount = 0;
+            state.result= '';
 
         },
         [CLICK_MINE](state, {row, cell}) {
@@ -82,7 +84,7 @@ export default new Vuex.Store({  // import store from ./store;
             Vue.set(state.tableData[row], cell, CODE.CLICKED_MINE)
         },
         [OPEN_CELL](state, {row, cell}) {
-
+            let openedCount = 0;
             const checked = [];
             function getAroundMineNumber(row, cell) {
 
@@ -145,11 +147,25 @@ export default new Vuex.Store({  // import store from ./store;
                         }
                     })
                 }
+                if (state.tableData[row][cell] === CODE.NORMAL) {
+                    openedCount += 1
+                }
                 Vue.set(state.tableData[row], cell, counted.length)
+
             }
             getAroundMineNumber(row, cell);
+
+            let halted = false;
+            let result;
+            if( state.data.row * state.data.cell - state.data.mine === state.openedCount + openedCount) {
+                halted = true;
+                result = `${state.timer}초만에 승리하셨습니다.`
+            }
+            state.openedCount += openedCount;
+            state.halted = halted;
+            state.result = result;
             // state.tableData[row][cell] = code.OPEN // 이렇게 하지마 !!
-            Vue.set(state.tableData[row], cell, getAroundMineNumber(row, cell))
+            // Vue.set(state.tableData[row], cell, getAroundMineNumber(row, cell))
         },
         [FLAG_CELL](state, {row, cell}) {
             if( state.tableData[row][cell] === CODE.MINE) {
