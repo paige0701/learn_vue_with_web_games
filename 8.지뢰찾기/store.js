@@ -82,12 +82,39 @@ export default new Vuex.Store({  // import store from ./store;
             state.halted = false;
 
         },
-        [CLICK_MINE](state) {
-
+        [CLICK_MINE](state, {row, cell}) {
+            state.halted = true; // 지뢰 밟았으니 게임 스탑
+            Vue.set(state.tableData[row], cell, CODE.CLICKED_MINE)
         },
         [OPEN_CELL](state, {row, cell}) {
+
+            function getAroundMineNumber() {
+                // 칸을 클릭했을 떄 주변 주변 지뢰 번호 출력하기
+                let around = [];
+
+                if (state.tableData[row-1]) {
+                    around = around.concat([
+                        state.tableData[row-1][cell-1], state.tableData[row-1][cell], state.tableData[row-1][cell+1]
+                    ]);
+                }
+                around = around.concat([
+                    state.tableData[row][cell-1], state.tableData[row][cell+1]
+                ]);
+
+                if (state.tableData[row+1]) {
+                    around = around.concat([
+                        state.tableData[row+1][cell-1], state.tableData[row+1][cell], state.tableData[row+1][cell+1]
+                    ]);
+                }
+
+                return around.filter((v) => {
+                    return [CODE.MINE, CODE.FLAG_MINE, CODE.QUESTION_MINE].includes(v)
+                }).length;
+
+            }
+
             // state.tableData[row][cell] = code.OPEN // 이렇게 하지마 !!
-            Vue.set(state.tableData[row], cell, CODE.OPENED)
+            Vue.set(state.tableData[row], cell, getAroundMineNumber())
         },
         [FLAG_CELL](state, {row, cell}) {
             if( state.tableData[row][cell] === CODE.MINE) {
